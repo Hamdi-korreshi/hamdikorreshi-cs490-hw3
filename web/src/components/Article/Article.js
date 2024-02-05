@@ -1,6 +1,7 @@
 import { Link, routes } from '@redwoodjs/router'
-import CommentsCell from 'src/components/CommentsCell'
 
+import CommentForm from 'src/components/CommentForm'
+import CommentsCell from 'src/components/CommentsCell'
 
 const truncate = (text, length) => {
   return text.substring(0, length) + '...'
@@ -14,11 +15,15 @@ const Article = ({ article, summary = false }) => {
           <Link to={routes.article({ id: article.id })}>{article.title}</Link>
         </h2>
       </header>
-      <div className="mt-2 text-gray-900 font-light">       
-      {summary ? truncate(article.body, 100) : article.body}</div>
+      <div className="mt-2 text-gray-900 font-light">
+        {summary ? truncate(article.body, 100) : article.body}
+      </div>
       {!summary && (
         <div className="mt-12">
-          <CommentsCell />
+          <CommentForm postId={article.id} />
+          <div className="mt-12">
+          <CommentsCell postId={article.id} />
+          </div>
         </div>
       )}
     </article>
