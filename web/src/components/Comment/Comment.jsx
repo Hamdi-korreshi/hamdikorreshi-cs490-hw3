@@ -1,16 +1,37 @@
 import { useAuth } from 'src/auth'
+import { useMutation } from '@redwoodjs/web'
 
 const formattedDate = (datetime) => {
   const parsedDate = new Date(datetime)
   const month = parsedDate.toLocaleString('default', { month: 'long' })
   return `${parsedDate.getDate()} ${month} ${parsedDate.getFullYear()}`
 }
+import { QUERY as CommentsQuery } from 'src/components/CommentsCell'
+
+const DELETE = gql`
+  mutation DeleteCommentMutation($id: Int!) {
+    deleteComment(id: $id) {
+      postId
+    }
+  }
+`
 
 const Comment = ({ comment }) => {
   const { hasRole } = useAuth()
+  const [deleteComment] = useMutation(DELETE, {
+    refetchQueries: [
+      {
+        query: CommentsQuery,
+        variables: { postId: comment.postId },
+      },
+    ],
+  })
+
   const moderate = () => {
     if (confirm('Are you sure?')) {
-      // TODO: delete comment
+      deleteComment({
+        variables: { id: comment.id },
+      })
     }
   }
 
